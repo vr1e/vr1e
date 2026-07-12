@@ -1,0 +1,20 @@
+{
+	"name": "vr1e-profile",
+	"version": "1.0.0",
+	"description": "Self-updating GitHub profile stats card",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"update": "tsx src/update-stats.ts",
+		"test": "node --import tsx --test \"src/**/*.test.ts\""
+	},
+	"devDependencies": {
+		"@types/node": "^26.1.1",
+		"sharp": "^0.35.3",
+		"tsx": "^4.23.0",
+		"typescript": "^7.0.2"
+	},
+	"engines": {
+		"node": ">=24"
+	}
+}
