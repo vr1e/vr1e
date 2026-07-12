@@ -219,15 +219,13 @@ export function buildLines(stats: Stats): Line[] {
 export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 	const theme = themes[mode];
 	const lines = buildLines(stats);
-	const lineHeight = 21;
+	const lineHeight = 19;
 	const fontSize = 14;
-	const artX = 30;
+	const artX = 24;
 	const artWidth = artColumns * artFontSize * charWidthEm;
-	const statsX = artX + Math.ceil(artWidth) + 40;
-	const topY = 40;
-	// Neofetch-style palette strip below the stats block.
-	const swatch = { width: 26, height: 12, gap: 4 };
-	const stripY = topY + (lines.length - 1) * lineHeight + 16;
+	const statsX = artX + Math.ceil(artWidth) + 32;
+	const topY = 32;
+	const statsBottom = topY + (lines.length - 1) * lineHeight;
 	// Caption below the art, stamped with the render date.
 	const caption: Line = [
 		{ text: 'vr1e', color: 'header' },
@@ -236,29 +234,11 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 	];
 	const captionBlockHeight = lineHeight;
 	const artHeight = asciiArt.length * artLineHeight;
-	const height =
-		Math.max(topY + artHeight + captionBlockHeight + 20, stripY + swatch.height) + 30;
+	const height = Math.max(topY + artHeight + captionBlockHeight + 16, statsBottom) + 24;
 	// Center the art between the top edge and the caption line.
-	const captionTop = height - 30 - captionBlockHeight;
+	const captionTop = height - 24 - captionBlockHeight;
 	const artY = topY + Math.max(0, Math.round((captionTop - topY - artHeight) / 2));
-	const width = statsX + Math.ceil(LINE_WIDTH * fontSize * charWidthEm) + 30;
-	// Ordered warm-to-cool so the strip reads as a gradient, like neofetch's.
-	const paletteColors: (keyof Theme)[] = [
-		'minus',
-		'key',
-		'header',
-		'value',
-		'text',
-		'plus',
-		'dots',
-		'border'
-	];
-	const palette = paletteColors
-		.map(
-			(color, i) =>
-				`<rect x="${statsX + i * (swatch.width + swatch.gap)}" y="${stripY}" width="${swatch.width}" height="${swatch.height}" rx="2" fill="${theme[color]}"/>`
-		)
-		.join('\n\t');
+	const width = statsX + Math.ceil(LINE_WIDTH * fontSize * charWidthEm) + 24;
 
 	// Non-breaking spaces: regular runs of spaces get collapsed by SVG
 	// whitespace handling, which would destroy the box alignment.
@@ -293,7 +273,6 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 	</g>
 	${statsText}
 	${captionText}
-	${palette}
 </svg>
 `;
 }
