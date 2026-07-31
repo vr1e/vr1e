@@ -216,7 +216,72 @@ export function buildLines(stats: Stats): Line[] {
 	];
 }
 
-export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
+// Round animation times so the SVG stays compact and byte-for-byte stable.
+const round = (n: number): number => Math.round(n * 1000) / 1000;
+
+// The terminal boot: a `$ neofetch` prompt types, then each output line
+// staggers in, the portrait scans top-to-bottom, and the sparkline fills last.
+// Every reveal is a clip-path animation running `backwards` from a hidden
+// keyframe, so the base markup (what librsvg renders) is the complete card.
+interface LineSpec {
+	chars: number;
+	delay: number;
+	duration: number;
+}
+
+const PROMPT_DURATION = 0.8;
+const ART_DELAY = 0.85;
+const ART_DURATION = 1.5;
+
+// One timing spec per stats line, all derived from line lengths so the schedule
+// lives in exactly one place. The last line (the sparkline) is rescheduled to
+// reveal after every other line has finished typing.
+function lineSpecs(lines: Line[]): { specs: LineSpec[]; bootTotal: number } {
+	const specs: LineSpec[] = lines.map((line, i) => {
+		const chars = line.reduce((sum, s) => sum + s.text.length, 0);
+		return { chars, delay: round(0.85 + i * 0.08), duration: round(Math.max(0.3, chars * 0.015)) };
+	});
+	const lastIdx = lines.length - 1;
+	// End of the last non-sparkline reveal (blank lines animate nothing).
+	const revealEnd = Math.max(
+		PROMPT_DURATION,
+		...lines.slice(0, lastIdx).map((line, i) => (line.length ? specs[i].delay + specs[i].duration : 0))
+	);
+	specs[lastIdx] = { chars: specs[lastIdx].chars, delay: round(revealEnd), duration: 1 };
+	const bootTotal = round(
+		Math.max(revealEnd, specs[lastIdx].delay + specs[lastIdx].duration, ART_DELAY + ART_DURATION)
+	);
+	return { specs, bootTotal };
+}
+
+// The <style> block driving every reveal. Both keyframe endpoints are inset()
+// shapes so clip-path interpolates and steps() can march it char-by-char — a
+// from-only keyframe snaps the whole line in at the end instead (proven in
+// "Prove the typewriter reveal mechanism"). backwards fill + no forwards means
+// the element rests at its un-clipped base state, so the final frame == base
+// markup and reduced-motion / librsvg both show the complete card.
+function animationCss(artRows: number, bootTotal: number): string {
+	return `<style>
+	.line { animation: type var(--t) steps(var(--n), end) var(--d) backwards; }
+	@keyframes type {
+		from { clip-path: inset(-2px 100% -2px 0); }
+		to   { clip-path: inset(-2px 0 -2px 0); }
+	}
+	.art { animation: scan ${ART_DURATION}s steps(${artRows}, end) ${ART_DELAY}s backwards; }
+	@keyframes scan {
+		from { clip-path: inset(0 0 100% 0); }
+		to   { clip-path: inset(0 0 0 0); }
+	}
+	.cursor { animation: curhide ${bootTotal}s steps(1), blink 1.2s steps(1) ${bootTotal}s infinite; }
+	@keyframes curhide { from, to { opacity: 0; } }
+	@keyframes blink { 50% { opacity: 0; } }
+	@media (prefers-reduced-motion: reduce) {
+		.line, .art, .cursor { animation: none; }
+	}
+	</style>`;
+}
+
+export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new Date()): string {
 	const theme = themes[mode];
 	const lines = buildLines(stats);
 	const lineHeight = 19;
@@ -225,12 +290,14 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 	const artWidth = artColumns * artFontSize * charWidthEm;
 	const statsX = artX + Math.ceil(artWidth) + 32;
 	const topY = 32;
-	const statsBottom = topY + (lines.length - 1) * lineHeight;
+	const { specs, bootTotal } = lineSpecs(lines);
+	// Row 0 is the typed `$ neofetch` prompt; stats output starts one row below.
+	const statsBottom = topY + lines.length * lineHeight;
 	// Caption below the art, stamped with the render date.
 	const caption: Line = [
 		{ text: 'vr1e', color: 'header' },
 		{ text: ' | ', color: 'dots' },
-		{ text: `refreshed ${new Date().toISOString().slice(0, 10)}`, color: 'text' }
+		{ text: `refreshed ${now.toISOString().slice(0, 10)}`, color: 'text' }
 	];
 	const captionBlockHeight = lineHeight;
 	const artHeight = asciiArt.length * artLineHeight;
@@ -256,8 +323,27 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 		return `<text x="${x}" y="${y}">${tspans}</text>`;
 	};
 
+	// Wrap a line's <text> in a typewriter group. --w is the line's pixel width
+	// (informational, for timing tuning); the reveal itself clips by percentage.
+	const animLine = (x: number, y: number, line: Line, spec: LineSpec) => {
+		const px = round(spec.chars * fontSize * charWidthEm);
+		return `<g class="line" style="--w:${px}px; --n:${spec.chars}; --d:${spec.delay}s; --t:${spec.duration}s">${textLine(x, y, line)}</g>`;
+	};
+
+	// The typed prompt on row 0, above the stats output.
+	const prompt: Line = [
+		{ text: '$ ', color: 'plus' },
+		{ text: 'neofetch', color: 'text' }
+	];
+	const promptChars = prompt.reduce((sum, s) => sum + s.text.length, 0);
+	const promptText = animLine(statsX, topY, prompt, {
+		chars: promptChars,
+		delay: 0,
+		duration: PROMPT_DURATION
+	});
+
 	const statsText = lines
-		.map((line, i) => (line.length ? textLine(statsX, topY + i * lineHeight, line) : ''))
+		.map((line, i) => (line.length ? animLine(statsX, topY + (i + 1) * lineHeight, line, specs[i]) : ''))
 		.filter(Boolean)
 		.join('\n\t');
 
@@ -265,21 +351,27 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light'): string {
 	const captionChars = caption.reduce((sum, s) => sum + s.text.length, 0);
 	const captionX = artX + Math.max(0, (artWidth - captionChars * fontSize * charWidthEm) / 2);
 	const captionText = textLine(captionX, captionTop + fontSize, caption);
+	// Block cursor after the caption: hidden through the boot, then blinks.
+	const cursorX = round(captionX + captionChars * fontSize * charWidthEm);
+	const cursorText = `<text class="cursor" x="${cursorX}" y="${captionTop + fontSize}" fill="${theme.text}">█</text>`;
 
 	return `<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace" font-size="${fontSize}px">
+	${animationCss(asciiArt.length, bootTotal)}
 	<rect width="${width}" height="${height}" fill="${theme.background}"/>
-	<g font-size="${artFontSize}px">
+	<g class="art" font-size="${artFontSize}px">
 	${artText}
 	</g>
+	${promptText}
 	${statsText}
 	${captionText}
+	${cursorText}
 </svg>
 `;
 }
 
 // Render both themes and write <mode>_mode.svg; returns the filenames written.
-export async function writeCards(stats: Stats): Promise<string[]> {
+export async function writeCards(stats: Stats, now: Date = new Date()): Promise<string[]> {
 	const modes = ['dark', 'light'] as const;
-	await Promise.all(modes.map(mode => writeFile(`${mode}_mode.svg`, renderCard(stats, mode))));
+	await Promise.all(modes.map(mode => writeFile(`${mode}_mode.svg`, renderCard(stats, mode, now))));
 	return modes.map(mode => `${mode}_mode.svg`);
 }

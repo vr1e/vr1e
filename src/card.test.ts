@@ -165,3 +165,42 @@ describe('renderCard', () => {
 		assert.match(renderCard(baseStats, 'light'), /fill="#f6efe4"/);
 	});
 });
+
+describe('renderCard boot animation', () => {
+	it('embeds a <style> block with a reduced-motion off-switch', () => {
+		const svg = renderCard(baseStats, 'dark');
+		assert.match(svg, /<style>/);
+		assert.match(svg, /prefers-reduced-motion: reduce/);
+	});
+
+	it('keeps the complete card in base markup (static-fallback invariant)', () => {
+		// librsvg ignores CSS animation, so every stat value must be plain text
+		// in the un-clipped base markup — never revealed only by a keyframe.
+		const svg = renderCard(baseStats, 'dark');
+		for (const value of ['1,234', '5,173', '1,893 private', 'TypeScript 58%']) {
+			assert.ok(svg.includes(value), `base markup missing "${value}"`);
+		}
+	});
+
+	it('types a $ neofetch prompt before the stats', () => {
+		assert.match(renderCard(baseStats, 'dark'), /neofetch/);
+	});
+
+	it('wraps animated lines in g.line carrying per-line timing vars', () => {
+		const svg = renderCard(baseStats, 'dark');
+		assert.match(svg, /<g class="line" style="[^"]*--n:\d+[^"]*--d:[\d.]+s[^"]*--t:[\d.]+s/);
+	});
+
+	it('reveals the ascii art as one scanned group', () => {
+		assert.match(renderCard(baseStats, 'dark'), /<g class="art"/);
+	});
+
+	it('includes a blinking cursor element', () => {
+		assert.match(renderCard(baseStats, 'dark'), /class="cursor"/);
+	});
+
+	it('stamps the caption date from the now parameter', () => {
+		const svg = renderCard(baseStats, 'dark', new Date('2026-07-13T00:00:00Z'));
+		assert.match(svg, /refreshed 2026-07-13/);
+	});
+});
