@@ -71,9 +71,12 @@ export function formatUptime(from: Date, to: Date): string {
 	let years = to.getUTCFullYear() - from.getUTCFullYear();
 	let months = to.getUTCMonth() - from.getUTCMonth();
 	let days = to.getUTCDate() - from.getUTCDate();
-	if (days < 0) {
+	// Borrow from the months before `to` until days is non-negative — a single
+	// borrow comes up short when `from` sits past that month's end (Jan 31 ->
+	// Mar 1 underflows by 30 and February only offers 28).
+	for (let borrow = 0; days < 0; borrow++) {
 		months--;
-		days += new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), 0)).getUTCDate();
+		days += new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth() - borrow, 0)).getUTCDate();
 	}
 	if (months < 0) {
 		years--;
@@ -174,12 +177,12 @@ function languageLines(languages: LanguageShare[]): Line[] {
 	});
 }
 
-export function buildLines(stats: Stats): Line[] {
+export function buildLines(stats: Stats, now: Date = new Date()): Line[] {
 	return [
 		header(`${stats.login}@github`),
 		kv('OS', 'macOS, Linux'),
 		kv('Kernel', `TypeScript ${tsVersion}`),
-		kv('Uptime', formatUptime(stats.createdAt, new Date())),
+		kv('Uptime', formatUptime(stats.createdAt, now)),
 		kv('Packages', `${formatNumber(stats.ownedRepos)} (github)`, [
 			{ text: `, ${formatNumber(stats.contributedRepos)} (contributed)`, color: 'text' }
 		]),
@@ -283,7 +286,7 @@ function animationCss(artRows: number, bootTotal: number): string {
 
 export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new Date()): string {
 	const theme = themes[mode];
-	const lines = buildLines(stats);
+	const lines = buildLines(stats, now);
 	const lineHeight = 19;
 	const fontSize = 14;
 	const artX = 24;

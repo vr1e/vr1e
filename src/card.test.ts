@@ -54,6 +54,19 @@ describe('formatUptime', () => {
 			'1 years, 1 months, 21 days'
 		);
 	});
+
+	it('keeps borrowing when February alone cannot cover the underflow', () => {
+		// 31 Jan -> 1 Mar: the -30 day underflow exceeds February's 28 days.
+		assert.equal(
+			formatUptime(new Date('2023-01-31T00:00:00Z'), new Date('2023-03-01T00:00:00Z')),
+			'0 years, 0 months, 29 days'
+		);
+		// Leap year: the first borrow leaves exactly -1.
+		assert.equal(
+			formatUptime(new Date('2024-01-31T00:00:00Z'), new Date('2024-03-01T00:00:00Z')),
+			'0 years, 0 months, 30 days'
+		);
+	});
 });
 
 describe('buildLines', () => {
@@ -61,6 +74,14 @@ describe('buildLines', () => {
 		const [header] = buildLines(baseStats);
 		assert.equal(header[0].color, 'header');
 		assert.equal(header[0].text, 'vr1e@github ');
+	});
+
+	it('computes uptime from the injected clock', () => {
+		const flat = buildLines(baseStats, new Date('2026-03-03T15:40:46.000Z'))
+			.flat()
+			.map(s => s.text)
+			.join('');
+		assert.match(flat, /10 years, 0 months, 0 days/);
 	});
 
 	it('formats numbers with thousands separators', () => {

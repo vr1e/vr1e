@@ -7,7 +7,8 @@ export interface LanguageShare {
 	percent: number;
 }
 
-export interface Stats {
+// Profile-level facts, as returned by fetchProfile.
+export interface ProfileStats {
 	login: string;
 	createdAt: Date;
 	followers: number;
@@ -15,6 +16,10 @@ export interface Stats {
 	contributedRepos: number;
 	stars: number;
 	languages: LanguageShare[];
+}
+
+// Contribution history, as returned by fetchContributions.
+export interface ContributionStats {
 	commits: number;
 	prs: number;
 	issues: number;
@@ -27,6 +32,8 @@ export interface Stats {
 	longestStreak: number;
 	weeklyContributions: number[]; // last 52 weeks, oldest first
 }
+
+export type Stats = ProfileStats & ContributionStats;
 
 function token(): string {
 	const t = process.env.ACCESS_TOKEN;
@@ -77,22 +84,7 @@ interface ProfileData {
 	};
 }
 
-export async function fetchProfile(
-	username: string
-): Promise<
-	Omit<
-		Stats,
-		| 'commits'
-		| 'prs'
-		| 'issues'
-		| 'reviews'
-		| 'privateContributions'
-		| 'contributionsPastYear'
-		| 'currentStreak'
-		| 'longestStreak'
-		| 'weeklyContributions'
-	>
-> {
+export async function fetchProfile(username: string): Promise<ProfileStats> {
 	const query = `
 		query ($login: String!, $cursor: String) {
 			user(login: $login) {
@@ -174,20 +166,7 @@ interface ContributionsData {
 export async function fetchContributions(
 	username: string,
 	createdAt: Date
-): Promise<
-	Pick<
-		Stats,
-		| 'commits'
-		| 'prs'
-		| 'issues'
-		| 'reviews'
-		| 'privateContributions'
-		| 'contributionsPastYear'
-		| 'currentStreak'
-		| 'longestStreak'
-		| 'weeklyContributions'
-	>
-> {
+): Promise<ContributionStats> {
 	const query = `
 		query ($login: String!, $from: DateTime!, $to: DateTime!) {
 			user(login: $login) {

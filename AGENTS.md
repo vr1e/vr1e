@@ -7,8 +7,8 @@ Self-updating GitHub profile stats card: fetches stats and renders `dark_mode.sv
 - Run everything from the repo root — `writeCards` writes `<mode>_mode.svg` CWD-relative.
 - `npm run update` needs `ACCESS_TOKEN` (a GitHub PAT) or it throws.
 - `npx tsx src/render-preview.ts` **overwrites the committed SVGs with hardcoded fake stats.** Use it only when you intend to throw the result away, and `git checkout` the SVGs afterwards.
-- `npx tsc --noEmit` is the typecheck. No script wraps it and CI doesn't run it — run it before finishing.
-- Only `update` and `test` are npm scripts; `src/generate-ascii.ts` and `src/render-preview.ts` are `npx tsx` entry points.
+- `npm run typecheck` (`tsc --noEmit`) is the typecheck — run it before finishing; tests run through tsx and won't catch type errors.
+- Only `update`, `typecheck`, and `test` are npm scripts; `src/generate-ascii.ts` and `src/render-preview.ts` are `npx tsx` entry points.
 
 ## Gotchas
 

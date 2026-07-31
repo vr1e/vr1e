@@ -6,6 +6,7 @@
 	"private": true,
 	"scripts": {
 		"update": "tsx src/update-stats.ts",
+		"typecheck": "tsc --noEmit",
 		"test": "node --import tsx --test \"src/**/*.test.ts\""
 	},
 	"devDependencies": {
