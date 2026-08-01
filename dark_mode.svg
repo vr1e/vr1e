@@ -1,84 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="922" height="569" viewBox="0 0 922 569" font-family="'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace" font-size="14px">
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="922" height="550" viewBox="0 0 922 550" font-family="'Menlo', 'Consolas', 'DejaVu Sans Mono', monospace" font-size="14px">
 	<style>
 	.line { animation: type var(--t) steps(var(--n), end) var(--d) backwards; }
 	@keyframes type {
 		from { clip-path: inset(-2px 100% -2px 0); }
 		to   { clip-path: inset(-2px 0 -2px 0); }
 	}
-	.art { animation: scan 1.5s steps(35, end) 0.85s backwards; }
+	.bars { animation: rise var(--t) linear var(--d) backwards; }
+	@keyframes rise {
+		from { clip-path: inset(100% -2px -2px -2px); }
+		to   { clip-path: inset(-2px -2px -2px -2px); }
+	}
+	.art { animation: scan 1.5s steps(35, end) 0s backwards; }
 	@keyframes scan {
 		from { clip-path: inset(0 0 100% 0); }
 		to   { clip-path: inset(0 0 0 0); }
 	}
-	.cursor { animation: curhide 4.485s steps(1), blink 1.2s steps(1) 4.485s infinite; }
+	.cursor { animation: curhide 5.782s steps(1), blink 1.2s steps(1) 5.782s infinite; }
 	@keyframes curhide { from, to { opacity: 0; } }
 	@keyframes blink { 50% { opacity: 0; } }
 	@media (prefers-reduced-motion: reduce) {
-		.line, .art, .cursor { animation: none; }
+		.line, .bars, .art, .cursor { animation: none; }
 	}
 	</style>
-	<rect width="922" height="569" fill="#2b2430"/>
+	<rect width="922" height="550" fill="#2b2430"/>
 	<g class="art" font-size="10px">
-	<text x="24" y="87" fill="#e8dccb">   .   .................</text>
-	<text x="24" y="98" fill="#e8dccb">        ...............</text>
-	<text x="24" y="109" fill="#e8dccb">         .............</text>
-	<text x="24" y="120" fill="#e8dccb">        ............         .:---:..</text>
-	<text x="24" y="131" fill="#e8dccb">              .... .     .-=+*#*****++=:</text>
-	<text x="24" y="142" fill="#e8dccb">                      -=*#%%###########%+:</text>
-	<text x="24" y="153" fill="#e8dccb">                    -+##%%@@@@@@%%%%%%%@@#-</text>
-	<text x="24" y="164" fill="#e8dccb">                   +%%%%#*+=====------=+*%#:</text>
-	<text x="24" y="175" fill="#e8dccb">                  -@@@*=:..............::+%*.</text>
-	<text x="24" y="186" fill="#e8dccb">                  =@@=.................:::*#=</text>
-	<text x="24" y="197" fill="#e8dccb">                 .*%+..:................::=##:</text>
-	<text x="24" y="208" fill="#e8dccb">                 :##*:..:::---::::-==-::::=##-</text>
-	<text x="24" y="219" fill="#e8dccb">                 -%%*::--==***+-:-+***===-:*%-</text>
-	<text x="24" y="230" fill="#e8dccb">                 -%%=.-=+*##**+:.:=****++-:-%=</text>
-	<text x="24" y="241" fill="#e8dccb">                 .##-.:-=-=---:...::::::::::*+.</text>
-	<text x="24" y="252" fill="#e8dccb">                 :*#-.......::-----::.....::++:</text>
-	<text x="24" y="263" fill="#e8dccb">                 :=+=::...::-=*****=::::::::=-.</text>
-	<text x="24" y="274" fill="#e8dccb">                  :-=:::::---=++***=-:::::::=:</text>
-	<text x="24" y="285" fill="#e8dccb">                   :-=-----==+*****++=-:::-==.</text>
-	<text x="24" y="296" fill="#e8dccb">                   .-+==---=+====----==--====</text>
-	<text x="24" y="307" fill="#e8dccb">                    .=+++==+-:-===--:-++++=+:</text>
-	<text x="24" y="318" fill="#e8dccb">                     :**+***=-==++====*#**#=</text>
-	<text x="24" y="329" fill="#e8dccb">                      =%##*#*+*++++**####%+</text>
-	<text x="24" y="340" fill="#e8dccb">                     -##%%%%%%%%###%%%%%%#-.  .</text>
-	<text x="24" y="351" fill="#e8dccb">                   :+@#-*%%%%@@@@@@@@@%%*-+%-   .</text>
-	<text x="24" y="362" fill="#e8dccb">                  =%%@*:-+*#%%@@@@@@%#+=-:=@@*-.   ..</text>
-	<text x="24" y="373" fill="#e8dccb">               .-*%%@@@-:--=+++*++++=----:*@@@@#=:.   ..</text>
-	<text x="24" y="384" fill="#e8dccb">            :=#%%%%%@%@#--:----===----::-=@@@@%%@%#+-.    .</text>
-	<text x="24" y="395" fill="#e8dccb">        :-+#@@%###%%%%@@#*+=---------=++*%@@@@@%%%%%%#*=:.   .</text>
-	<text x="24" y="406" fill="#e8dccb">    .-+#%@@@@@@@@@%%%%@@#***************%@@@@%%%%%%%@@@@%#*-.</text>
-	<text x="24" y="417" fill="#e8dccb"> .-*%@@@%@@%%%%@@@@%%%%@@*===++++++++=+%@@@@%%%%@@@@@@%%%@@@%*-</text>
-	<text x="24" y="428" fill="#e8dccb">-#%@%@%%%@%%%%%%%@@@@@@%@@*==========+%@@%%%%%%@@@@@%%%%%%%%%@%*</text>
-	<text x="24" y="439" fill="#e8dccb">%%%%%@%%%@%%%%%%%@@@@@@@@@%*========*%@@%%%%@@@@@@@%%%%%%%%%%%%@</text>
-	<text x="24" y="450" fill="#e8dccb">%%@%%@%%%%%%%%%%%@@%%%@@@@@%*--====*%%%%%%@@@@@@@%%%%%%%%%%%%%@@</text>
-	<text x="24" y="461" fill="#e8dccb">%%@%%%%%%%%%%%%%%%%%%%%@@@@@@#====#%%%%%@@@@@@%%%%%%%%%%%%%@%%@@</text>
+	<text x="24" y="77" fill="#e8dccb">   .   .................</text>
+	<text x="24" y="88" fill="#e8dccb">        ...............</text>
+	<text x="24" y="99" fill="#e8dccb">         .............</text>
+	<text x="24" y="110" fill="#e8dccb">        ............         .:---:..</text>
+	<text x="24" y="121" fill="#e8dccb">              .... .     .-=+*#*****++=:</text>
+	<text x="24" y="132" fill="#e8dccb">                      -=*#%%###########%+:</text>
+	<text x="24" y="143" fill="#e8dccb">                    -+##%%@@@@@@%%%%%%%@@#-</text>
+	<text x="24" y="154" fill="#e8dccb">                   +%%%%#*+=====------=+*%#:</text>
+	<text x="24" y="165" fill="#e8dccb">                  -@@@*=:..............::+%*.</text>
+	<text x="24" y="176" fill="#e8dccb">                  =@@=.................:::*#=</text>
+	<text x="24" y="187" fill="#e8dccb">                 .*%+..:................::=##:</text>
+	<text x="24" y="198" fill="#e8dccb">                 :##*:..:::---::::-==-::::=##-</text>
+	<text x="24" y="209" fill="#e8dccb">                 -%%*::--==***+-:-+***===-:*%-</text>
+	<text x="24" y="220" fill="#e8dccb">                 -%%=.-=+*##**+:.:=****++-:-%=</text>
+	<text x="24" y="231" fill="#e8dccb">                 .##-.:-=-=---:...::::::::::*+.</text>
+	<text x="24" y="242" fill="#e8dccb">                 :*#-.......::-----::.....::++:</text>
+	<text x="24" y="253" fill="#e8dccb">                 :=+=::...::-=*****=::::::::=-.</text>
+	<text x="24" y="264" fill="#e8dccb">                  :-=:::::---=++***=-:::::::=:</text>
+	<text x="24" y="275" fill="#e8dccb">                   :-=-----==+*****++=-:::-==.</text>
+	<text x="24" y="286" fill="#e8dccb">                   .-+==---=+====----==--====</text>
+	<text x="24" y="297" fill="#e8dccb">                    .=+++==+-:-===--:-++++=+:</text>
+	<text x="24" y="308" fill="#e8dccb">                     :**+***=-==++====*#**#=</text>
+	<text x="24" y="319" fill="#e8dccb">                      =%##*#*+*++++**####%+</text>
+	<text x="24" y="330" fill="#e8dccb">                     -##%%%%%%%%###%%%%%%#-.  .</text>
+	<text x="24" y="341" fill="#e8dccb">                   :+@#-*%%%%@@@@@@@@@%%*-+%-   .</text>
+	<text x="24" y="352" fill="#e8dccb">                  =%%@*:-+*#%%@@@@@@%#+=-:=@@*-.   ..</text>
+	<text x="24" y="363" fill="#e8dccb">               .-*%%@@@-:--=+++*++++=----:*@@@@#=:.   ..</text>
+	<text x="24" y="374" fill="#e8dccb">            :=#%%%%%@%@#--:----===----::-=@@@@%%@%#+-.    .</text>
+	<text x="24" y="385" fill="#e8dccb">        :-+#@@%###%%%%@@#*+=---------=++*%@@@@@%%%%%%#*=:.   .</text>
+	<text x="24" y="396" fill="#e8dccb">    .-+#%@@@@@@@@@%%%%@@#***************%@@@@%%%%%%%@@@@%#*-.</text>
+	<text x="24" y="407" fill="#e8dccb"> .-*%@@@%@@%%%%@@@@%%%%@@*===++++++++=+%@@@@%%%%@@@@@@%%%@@@%*-</text>
+	<text x="24" y="418" fill="#e8dccb">-#%@%@%%%@%%%%%%%@@@@@@%@@*==========+%@@%%%%%%@@@@@%%%%%%%%%@%*</text>
+	<text x="24" y="429" fill="#e8dccb">%%%%%@%%%@%%%%%%%@@@@@@@@@%*========*%@@%%%%@@@@@@@%%%%%%%%%%%%@</text>
+	<text x="24" y="440" fill="#e8dccb">%%@%%@%%%%%%%%%%%@@%%%@@@@@%*--====*%%%%%%@@@@@@@%%%%%%%%%%%%%@@</text>
+	<text x="24" y="451" fill="#e8dccb">%%@%%%%%%%%%%%%%%%%%%%%@@@@@@#====#%%%%%@@@@@@%%%%%%%%%%%%%@%%@@</text>
 	</g>
-	<g class="line" style="--w:84.322px; --n:10; --d:0s; --t:0.8s"><text x="442" y="32"><tspan fill="#9cb380">$ </tspan><tspan fill="#e8dccb">neofetch</tspan></text></g>
-	<g class="line" style="--w:438.474px; --n:52; --d:0.85s; --t:0.78s"><text x="442" y="51"><tspan fill="#d98a74">vr1e@github </tspan><tspan fill="#71657d">────────────────────────────────────────</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:0.93s; --t:0.795s"><text x="442" y="70"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">OS</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................................. </tspan><tspan fill="#e0b48c">macOS, Linux</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.01s; --t:0.795s"><text x="442" y="89"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Kernel</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......................... </tspan><tspan fill="#e0b48c">TypeScript 7.0.2</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.09s; --t:0.795s"><text x="442" y="108"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Uptime</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">............... </tspan><tspan fill="#e0b48c">10 years, 4 months, 28 days</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.17s; --t:0.795s"><text x="442" y="127"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Packages</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">............ </tspan><tspan fill="#e0b48c">74 (github)</tspan><tspan fill="#e8dccb">, 2 (contributed)</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.25s; --t:0.795s"><text x="442" y="146"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Shell</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">........................................ </tspan><tspan fill="#e0b48c">zsh</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.33s; --t:0.795s"><text x="442" y="165"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">IDE</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......................... </tspan><tspan fill="#e0b48c">VSCode, Claude Code</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.41s; --t:0.795s"><text x="442" y="184"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Host</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................... </tspan><tspan fill="#e0b48c">marktguru</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.57s; --t:0.795s"><text x="442" y="222"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Languages.Code</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">... </tspan><tspan fill="#e0b48c">TypeScript 54%, JavaScript 16%,</tspan></text></g>
-	<g class="line" style="--w:413.178px; --n:49; --d:1.65s; --t:0.735s"><text x="442" y="241"><tspan fill="#71657d">                      </tspan><tspan fill="#e0b48c">CSS 12%, HTML 8%, Python 5%</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.73s; --t:0.795s"><text x="442" y="260"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Languages.Real</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......... </tspan><tspan fill="#e0b48c">Serbian, English, German</tspan></text></g>
-	<g class="line" style="--w:438.474px; --n:52; --d:1.89s; --t:0.78s"><text x="442" y="298"><tspan fill="#d98a74">Contact </tspan><tspan fill="#71657d">────────────────────────────────────────────</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:1.97s; --t:0.795s"><text x="442" y="317"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Website</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................ </tspan><tspan fill="#e0b48c">return.rs</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.05s; --t:0.795s"><text x="442" y="336"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">GitHub</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">...................................... </tspan><tspan fill="#e0b48c">vr1e</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.13s; --t:0.795s"><text x="442" y="355"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Location</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................ </tspan><tspan fill="#e0b48c">Wien, AT</tspan></text></g>
-	<g class="line" style="--w:438.474px; --n:52; --d:2.29s; --t:0.78s"><text x="442" y="393"><tspan fill="#d98a74">GitHub Stats </tspan><tspan fill="#71657d">───────────────────────────────────────</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.37s; --t:0.795s"><text x="442" y="412"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Stars</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">........................... </tspan><tspan fill="#e0b48c">5</tspan><tspan fill="#e8dccb"> | </tspan><tspan fill="#cd7e5d">Followers</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#e0b48c">3</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.45s; --t:0.795s"><text x="442" y="431"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Commits</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................... </tspan><tspan fill="#e0b48c">2,007 (1,629 private)</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.53s; --t:0.795s"><text x="442" y="450"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Issues</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.............................. </tspan><tspan fill="#e0b48c">40</tspan><tspan fill="#e8dccb"> | </tspan><tspan fill="#cd7e5d">PRs</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#e0b48c">81</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.61s; --t:0.795s"><text x="442" y="469"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Contributions</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................... </tspan><tspan fill="#e0b48c">555 (past year)</tspan></text></g>
-	<g class="line" style="--w:446.907px; --n:53; --d:2.69s; --t:0.795s"><text x="442" y="488"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Streak</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">....................... </tspan><tspan fill="#e0b48c">2 days (longest 11)</tspan></text></g>
-	<g class="line" style="--w:219.237px; --n:26; --d:2.85s; --t:0.39s"><text x="442" y="526"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Activity</tspan><tspan fill="#71657d"> (past 52 weeks)</tspan></text></g>
-	<g class="line" style="--w:438.474px; --n:52; --d:3.485s; --t:1s"><text x="442" y="545"><tspan fill="#71657d">▁</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#cd7e5d">▅▅</tspan><tspan fill="#9cb380">▃▃▂</tspan><tspan fill="#71657d">▁▁</tspan><tspan fill="#c75f4e">█</tspan><tspan fill="#cd7e5d">▅▅</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#cd7e5d">▅</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#71657d">▁▁</tspan><tspan fill="#9cb380">▃</tspan><tspan fill="#71657d">▁▁▁▁▁▁▁▁▁▁▁</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#71657d">▁</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#cd7e5d">▅▅</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#cd7e5d">▆▅</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#71657d">▁▁</tspan><tspan fill="#cd7e5d">▅</tspan><tspan fill="#c75f4e">▆</tspan><tspan fill="#cd7e5d">▅</tspan><tspan fill="#c75f4e">▆</tspan><tspan fill="#cd7e5d">▅▅▆▅▅▅</tspan></text></g>
-	<text x="102.9013" y="540"><tspan fill="#d98a74">vr1e</tspan><tspan fill="#71657d"> | </tspan><tspan fill="#e8dccb">refreshed 2026-07-31</tspan></text>
-	<text class="cursor" x="330.571" y="540" fill="#e8dccb">█</text>
+	<g class="line" style="--w:438.474px; --n:52; --d:0s; --t:0s"><text x="442" y="32"><tspan fill="#d98a74">vr1e@github </tspan><tspan fill="#71657d">────────────────────────────────────────</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:0.05s; --t:0.201s"><text x="442" y="51"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">OS</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................................. </tspan><tspan fill="#e0b48c">macOS, Linux</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:0.301s; --t:0.201s"><text x="442" y="70"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Kernel</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......................... </tspan><tspan fill="#e0b48c">TypeScript 7.0.2</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:0.552s; --t:0.201s"><text x="442" y="89"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Uptime</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">............... </tspan><tspan fill="#e0b48c">10 years, 4 months, 29 days</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:0.803s; --t:0.201s"><text x="442" y="108"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Packages</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">............ </tspan><tspan fill="#e0b48c">74 (github)</tspan><tspan fill="#e8dccb">, 2 (contributed)</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:1.054s; --t:0.201s"><text x="442" y="127"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Shell</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">........................................ </tspan><tspan fill="#e0b48c">zsh</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:1.305s; --t:0.201s"><text x="442" y="146"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">IDE</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......................... </tspan><tspan fill="#e0b48c">VSCode, Claude Code</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:1.556s; --t:0.201s"><text x="442" y="165"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Host</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................... </tspan><tspan fill="#e0b48c">marktguru</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:1.927s; --t:0.201s"><text x="442" y="203"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Languages.Code</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">... </tspan><tspan fill="#e0b48c">TypeScript 54%, JavaScript 16%,</tspan></text></g>
+	<g class="line" style="--w:413.178px; --n:49; --d:2.178s; --t:0.186s"><text x="442" y="222"><tspan fill="#71657d">                      </tspan><tspan fill="#e0b48c">CSS 12%, HTML 8%, Python 5%</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:2.414s; --t:0.201s"><text x="442" y="241"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Languages.Real</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.......... </tspan><tspan fill="#e0b48c">Serbian, English, German</tspan></text></g>
+	<g class="line" style="--w:438.474px; --n:52; --d:2.785s; --t:0s"><text x="442" y="279"><tspan fill="#d98a74">Contact </tspan><tspan fill="#71657d">────────────────────────────────────────────</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:2.835s; --t:0.201s"><text x="442" y="298"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Website</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................ </tspan><tspan fill="#e0b48c">return.rs</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:3.086s; --t:0.201s"><text x="442" y="317"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">GitHub</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">...................................... </tspan><tspan fill="#e0b48c">vr1e</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:3.337s; --t:0.201s"><text x="442" y="336"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Location</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">................................ </tspan><tspan fill="#e0b48c">Wien, AT</tspan></text></g>
+	<g class="line" style="--w:438.474px; --n:52; --d:3.708s; --t:0s"><text x="442" y="374"><tspan fill="#d98a74">GitHub Stats </tspan><tspan fill="#71657d">───────────────────────────────────────</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:3.758s; --t:0.201s"><text x="442" y="393"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Stars</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">........................... </tspan><tspan fill="#e0b48c">5</tspan><tspan fill="#e8dccb"> | </tspan><tspan fill="#cd7e5d">Followers</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#e0b48c">3</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:4.009s; --t:0.201s"><text x="442" y="412"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Commits</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................... </tspan><tspan fill="#e0b48c">2,008 (1,629 private)</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:4.26s; --t:0.201s"><text x="442" y="431"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Issues</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.............................. </tspan><tspan fill="#e0b48c">40</tspan><tspan fill="#e8dccb"> | </tspan><tspan fill="#cd7e5d">PRs</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#e0b48c">81</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:4.511s; --t:0.201s"><text x="442" y="450"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Contributions</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">.................... </tspan><tspan fill="#e0b48c">556 (past year)</tspan></text></g>
+	<g class="line" style="--w:446.907px; --n:53; --d:4.762s; --t:0.201s"><text x="442" y="469"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Streak</tspan><tspan fill="#e8dccb">: </tspan><tspan fill="#71657d">....................... </tspan><tspan fill="#e0b48c">3 days (longest 11)</tspan></text></g>
+	<g class="line" style="--w:219.237px; --n:26; --d:5.133s; --t:0.099s"><text x="442" y="507"><tspan fill="#71657d">. </tspan><tspan fill="#cd7e5d">Activity</tspan><tspan fill="#71657d"> (past 52 weeks)</tspan></text></g>
+	<g class="bars" style="--w:438.474px; --n:52; --d:5.282s; --t:0.5s"><text x="442" y="526"><tspan fill="#71657d">▁</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#cd7e5d">▆▆</tspan><tspan fill="#e0b48c">▃▃</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#71657d">▁</tspan><tspan fill="#cd7e5d">▆</tspan><tspan fill="#c75f4e">█</tspan><tspan fill="#cd7e5d">▅▆</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#cd7e5d">▆</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#71657d">▁▁</tspan><tspan fill="#e0b48c">▃</tspan><tspan fill="#71657d">▁▁▁▁▁▁▁▁▁▁▁</tspan><tspan fill="#9cb380">▂</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#71657d">▁</tspan><tspan fill="#cd7e5d">▅</tspan><tspan fill="#c75f4e">▇</tspan><tspan fill="#e0b48c">▄▄</tspan><tspan fill="#c75f4e">▇</tspan><tspan fill="#cd7e5d">▆</tspan><tspan fill="#71657d">▁▁▁</tspan><tspan fill="#cd7e5d">▆</tspan><tspan fill="#c75f4e">▇</tspan><tspan fill="#cd7e5d">▆</tspan><tspan fill="#c75f4e">▇</tspan><tspan fill="#cd7e5d">▅▆</tspan><tspan fill="#c75f4e">▇</tspan><tspan fill="#e0b48c">▄</tspan><tspan fill="#cd7e5d">▆▆</tspan></text></g>
+	<text x="102.9013" y="521"><tspan fill="#d98a74">vr1e</tspan><tspan fill="#71657d"> | </tspan><tspan fill="#e8dccb">refreshed 2026-08-01</tspan></text>
+	<text class="cursor" x="330.571" y="521" fill="#e8dccb">█</text>
 </svg>
