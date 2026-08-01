@@ -107,6 +107,12 @@ function header(title: string): Line {
 	];
 }
 
+// Section titles are the only 'header'-colored rows inside buildLines(), which
+// is how the boot schedule tells them apart from body lines.
+function isHeader(line: Line): boolean {
+	return line[0]?.color === 'header';
+}
+
 // Weekly contribution counts as a one-line block-character sparkline,
 // heat-colored from quiet to busy along the theme's warm ramp.
 function sparkline(weeks: number[]): Line {
@@ -222,39 +228,44 @@ export function buildLines(stats: Stats, now: Date = new Date()): Line[] {
 // Round animation times so the SVG stays compact and byte-for-byte stable.
 const round = (n: number): number => Math.round(n * 1000) / 1000;
 
-// The terminal boot: a `$ neofetch` prompt types, then each output line
-// staggers in, the portrait scans top-to-bottom, and the sparkline fills last.
-// Every reveal is a clip-path animation running `backwards` from a hidden
-// keyframe, so the base markup (what librsvg renders) is the complete card.
+// The terminal boot, paced like an old serial console painting the screen:
+// section titles snap in whole, body lines type out one after another (each
+// waiting for the one above to finish), and the sparkline rises last. Every
+// reveal is a clip-path animation running `backwards` from a hidden keyframe,
+// so the base markup (what librsvg renders) is the complete card.
 interface LineSpec {
 	chars: number;
 	delay: number;
 	duration: number;
 }
 
-const PROMPT_DURATION = 0.8;
-const ART_DELAY = 0.85;
+const CHAR_TIME = 0.0038; // seconds per character, the console's "baud rate"
+const LINE_BREAK = 0.05; // CR/LF settle after each rendered row
+const BLANK_PAUSE = 0.12; // a blank row is a visible beat between sections
+const SPARK_DURATION = 0.5; // bottom-to-top bar rise
+const ART_DELAY = 0;
 const ART_DURATION = 1.5;
 
-// One timing spec per stats line, all derived from line lengths so the schedule
-// lives in exactly one place. The last line (the sparkline) is rescheduled to
-// reveal after every other line has finished typing.
+// One timing spec per stats line, walked as a running clock so no two lines
+// ever overlap. Titles get duration 0 (backwards fill holds them hidden through
+// the delay, then they land instantly); the last line is the sparkline, which
+// rises rather than types.
 function lineSpecs(lines: Line[]): { specs: LineSpec[]; bootTotal: number } {
+	const lastIdx = lines.length - 1;
+	let t = 0;
 	const specs: LineSpec[] = lines.map((line, i) => {
 		const chars = line.reduce((sum, s) => sum + s.text.length, 0);
-		return { chars, delay: round(0.85 + i * 0.08), duration: round(Math.max(0.3, chars * 0.015)) };
+		if (!line.length) {
+			// Blank rows render nothing but still cost a beat on the clock.
+			t = round(t + BLANK_PAUSE);
+			return { chars, delay: round(t), duration: 0 };
+		}
+		const duration = i === lastIdx ? SPARK_DURATION : isHeader(line) ? 0 : round(chars * CHAR_TIME);
+		const spec = { chars, delay: round(t), duration };
+		t = round(t + duration + (i === lastIdx ? 0 : LINE_BREAK));
+		return spec;
 	});
-	const lastIdx = lines.length - 1;
-	// End of the last non-sparkline reveal (blank lines animate nothing).
-	const revealEnd = Math.max(
-		PROMPT_DURATION,
-		...lines.slice(0, lastIdx).map((line, i) => (line.length ? specs[i].delay + specs[i].duration : 0))
-	);
-	specs[lastIdx] = { chars: specs[lastIdx].chars, delay: round(revealEnd), duration: 1 };
-	const bootTotal = round(
-		Math.max(revealEnd, specs[lastIdx].delay + specs[lastIdx].duration, ART_DELAY + ART_DURATION)
-	);
-	return { specs, bootTotal };
+	return { specs, bootTotal: round(Math.max(t, ART_DELAY + ART_DURATION)) };
 }
 
 // The <style> block driving every reveal. Both keyframe endpoints are inset()
@@ -270,6 +281,11 @@ function animationCss(artRows: number, bootTotal: number): string {
 		from { clip-path: inset(-2px 100% -2px 0); }
 		to   { clip-path: inset(-2px 0 -2px 0); }
 	}
+	.bars { animation: rise var(--t) linear var(--d) backwards; }
+	@keyframes rise {
+		from { clip-path: inset(100% -2px -2px -2px); }
+		to   { clip-path: inset(-2px -2px -2px -2px); }
+	}
 	.art { animation: scan ${ART_DURATION}s steps(${artRows}, end) ${ART_DELAY}s backwards; }
 	@keyframes scan {
 		from { clip-path: inset(0 0 100% 0); }
@@ -279,7 +295,7 @@ function animationCss(artRows: number, bootTotal: number): string {
 	@keyframes curhide { from, to { opacity: 0; } }
 	@keyframes blink { 50% { opacity: 0; } }
 	@media (prefers-reduced-motion: reduce) {
-		.line, .art, .cursor { animation: none; }
+		.line, .bars, .art, .cursor { animation: none; }
 	}
 	</style>`;
 }
@@ -294,8 +310,8 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new
 	const statsX = artX + Math.ceil(artWidth) + 32;
 	const topY = 32;
 	const { specs, bootTotal } = lineSpecs(lines);
-	// Row 0 is the typed `$ neofetch` prompt; stats output starts one row below.
-	const statsBottom = topY + lines.length * lineHeight;
+	// Baseline of the last stats row, which sits on row 0 at topY.
+	const statsBottom = topY + (lines.length - 1) * lineHeight;
 	// Caption below the art, stamped with the render date.
 	const caption: Line = [
 		{ text: 'vr1e', color: 'header' },
@@ -326,27 +342,21 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new
 		return `<text x="${x}" y="${y}">${tspans}</text>`;
 	};
 
-	// Wrap a line's <text> in a typewriter group. --w is the line's pixel width
+	// Wrap a line's <text> in a reveal group. --w is the line's pixel width
 	// (informational, for timing tuning); the reveal itself clips by percentage.
-	const animLine = (x: number, y: number, line: Line, spec: LineSpec) => {
+	const animLine = (x: number, y: number, line: Line, spec: LineSpec, cls = 'line') => {
 		const px = round(spec.chars * fontSize * charWidthEm);
-		return `<g class="line" style="--w:${px}px; --n:${spec.chars}; --d:${spec.delay}s; --t:${spec.duration}s">${textLine(x, y, line)}</g>`;
+		return `<g class="${cls}" style="--w:${px}px; --n:${spec.chars}; --d:${spec.delay}s; --t:${spec.duration}s">${textLine(x, y, line)}</g>`;
 	};
 
-	// The typed prompt on row 0, above the stats output.
-	const prompt: Line = [
-		{ text: '$ ', color: 'plus' },
-		{ text: 'neofetch', color: 'text' }
-	];
-	const promptChars = prompt.reduce((sum, s) => sum + s.text.length, 0);
-	const promptText = animLine(statsX, topY, prompt, {
-		chars: promptChars,
-		delay: 0,
-		duration: PROMPT_DURATION
-	});
-
+	// The sparkline on the last row rises from its baseline instead of typing.
+	const lastIdx = lines.length - 1;
 	const statsText = lines
-		.map((line, i) => (line.length ? animLine(statsX, topY + (i + 1) * lineHeight, line, specs[i]) : ''))
+		.map((line, i) =>
+			line.length
+				? animLine(statsX, topY + i * lineHeight, line, specs[i], i === lastIdx ? 'bars' : 'line')
+				: ''
+		)
 		.filter(Boolean)
 		.join('\n\t');
 
@@ -364,7 +374,6 @@ export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new
 	<g class="art" font-size="${artFontSize}px">
 	${artText}
 	</g>
-	${promptText}
 	${statsText}
 	${captionText}
 	${cursorText}

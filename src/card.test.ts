@@ -203,8 +203,44 @@ describe('renderCard boot animation', () => {
 		}
 	});
 
-	it('types a $ neofetch prompt before the stats', () => {
-		assert.match(renderCard(baseStats, 'dark'), /neofetch/);
+	it('has no $ neofetch prompt gating the output', () => {
+		assert.doesNotMatch(renderCard(baseStats, 'dark'), /neofetch/);
+	});
+
+	it('schedules every reveal sequentially, with no two overlapping', () => {
+		const svg = renderCard(baseStats, 'dark');
+		const schedule = [...svg.matchAll(/--d:([\d.]+)s; --t:([\d.]+)s/g)].map(m => ({
+			delay: Number(m[1]),
+			duration: Number(m[2])
+		}));
+		assert.ok(schedule.length > 20, `expected a full card of reveals, got ${schedule.length}`);
+		schedule.reduce((endOfPrevious, { delay, duration }, i) => {
+			assert.ok(
+				delay >= endOfPrevious - 1e-9,
+				`line ${i} starts at ${delay}s but the line above ends at ${endOfPrevious}s`
+			);
+			return delay + duration;
+		}, 0);
+	});
+
+	it('snaps the section titles in without typing them', () => {
+		const svg = renderCard(baseStats, 'dark');
+		const instant = [...svg.matchAll(/<g class="line"[^>]*--t:0s/g)];
+		// vr1e@github, Contact, GitHub Stats.
+		assert.equal(instant.length, 3);
+	});
+
+	it('reveals the sparkline as rising bars, not typed text', () => {
+		assert.match(renderCard(baseStats, 'dark'), /<g class="bars"/);
+	});
+
+	it('keeps the whole boot within the intended ~6s', () => {
+		const svg = renderCard(baseStats, 'dark');
+		const bootTotal = Number(/animation: curhide ([\d.]+)s/.exec(svg)?.[1]);
+		assert.ok(
+			bootTotal >= 5 && bootTotal <= 7,
+			`boot runs ${bootTotal}s — retune CHAR_TIME to land back near 6s`
+		);
 	});
 
 	it('wraps animated lines in g.line carrying per-line timing vars', () => {
