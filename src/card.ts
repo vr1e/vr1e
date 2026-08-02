@@ -4,48 +4,11 @@ import { createRequire } from 'node:module';
 import { asciiArt } from './ascii.js';
 import type { LanguageShare, Stats } from './github.js';
 import { artFontSize, artLineHeight, charWidthEm } from './metrics.js';
+import type { PaletteName, Theme } from './palette.js';
+import { paletteFor, themes } from './palette.js';
 
 // The "Kernel" joke line self-updates with this repo's TypeScript version.
 const tsVersion: string = createRequire(import.meta.url)('typescript/package.json').version;
-
-interface Theme {
-	background: string;
-	border: string;
-	text: string;
-	key: string;
-	value: string;
-	dots: string;
-	header: string;
-	plus: string;
-	minus: string;
-}
-
-// Warm clay-on-plum palette after the classic neofetch screenshot look;
-// light mode is the same hues on cream paper.
-const themes: Record<'dark' | 'light', Theme> = {
-	dark: {
-		background: '#2b2430',
-		border: '#544a5e',
-		text: '#e8dccb',
-		key: '#cd7e5d',
-		value: '#e0b48c',
-		dots: '#71657d',
-		header: '#d98a74',
-		plus: '#9cb380',
-		minus: '#c75f4e'
-	},
-	light: {
-		background: '#f6efe4',
-		border: '#dccdb8',
-		text: '#52453e',
-		key: '#ad5136',
-		value: '#8c5e34',
-		dots: '#b3a493',
-		header: '#c05b40',
-		plus: '#728a52',
-		minus: '#b23e2e'
-	}
-};
 
 type Segment = { text: string; color: keyof Theme };
 type Line = Segment[];
@@ -114,7 +77,7 @@ function isHeader(line: Line): boolean {
 }
 
 // Weekly contribution counts as a one-line block-character sparkline,
-// heat-colored from quiet to busy along the theme's warm ramp.
+// heat-colored from quiet to busy along the live palette's ramp.
 function sparkline(weeks: number[]): Line {
 	const blocks = '▁▂▃▄▅▆▇█';
 	const heat: (keyof Theme)[] = ['dots', 'plus', 'value', 'key', 'minus'];
@@ -300,8 +263,17 @@ function animationCss(artRows: number, bootTotal: number): string {
 	</style>`;
 }
 
-export function renderCard(stats: Stats, mode: 'dark' | 'light', now: Date = new Date()): string {
-	const theme = themes[mode];
+// `palette` defaults to whatever the date says, so production callers pass
+// nothing. The override stops here: writeCards gains no parameters, since every
+// one of them is another way to aim its CWD-relative writes somewhere new.
+// Anything wanting a specific palette calls renderCard directly.
+export function renderCard(
+	stats: Stats,
+	mode: 'dark' | 'light',
+	now: Date = new Date(),
+	palette: PaletteName = paletteFor(now)
+): string {
+	const theme = themes[palette][mode];
 	const lines = buildLines(stats, now);
 	const lineHeight = 19;
 	const fontSize = 14;

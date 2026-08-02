@@ -26,6 +26,11 @@ const baseStats: Stats = {
 	weeklyContributions: Array.from({ length: 52 }, (_, i) => (i * 13) % 29)
 };
 
+// A fixed instant so the palette-asserting tests never read the real clock.
+// Deliberately not a Matrix week, so a future colour assertion that forgets the
+// palette argument fails loudly on the season rather than silently going black.
+const FIXED_NOW = new Date('2026-07-06T00:00:00Z');
+
 describe('formatUptime', () => {
 	it('is all zeros for identical dates', () => {
 		const d = new Date('2020-05-15T00:00:00Z');
@@ -181,9 +186,18 @@ describe('renderCard', () => {
 		assert.doesNotMatch(svg, /a<b>&c/);
 	});
 
+	// Pinned palette and hardcoded hexes: deriving the expectation from `themes`
+	// would pass whatever the palette says and test nothing.
 	it('uses the requested theme background', () => {
-		assert.match(renderCard(baseStats, 'dark'), /fill="#2b2430"/);
-		assert.match(renderCard(baseStats, 'light'), /fill="#f6efe4"/);
+		assert.match(renderCard(baseStats, 'dark', FIXED_NOW, 'autumn'), /fill="#2b2430"/);
+		assert.match(renderCard(baseStats, 'light', FIXED_NOW, 'autumn'), /fill="#f6efe4"/);
+	});
+
+	// The mode collapse the type cannot enforce: matrix hands both modes the
+	// same black card on purpose.
+	it('renders matrix black in both modes', () => {
+		assert.match(renderCard(baseStats, 'dark', FIXED_NOW, 'matrix'), /fill="#000000"/);
+		assert.match(renderCard(baseStats, 'light', FIXED_NOW, 'matrix'), /fill="#000000"/);
 	});
 });
 
